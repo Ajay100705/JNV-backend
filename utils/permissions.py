@@ -7,7 +7,7 @@ class IsPrincipal(BasePermission):
         return (
             request.user
             and request.user.is_authenticated
-            and request.user.roll == 'principal'
+            and request.user.role == 'principal'
         )
 
 class IsTeacherOrPrincipal(BasePermission):
@@ -15,7 +15,7 @@ class IsTeacherOrPrincipal(BasePermission):
         return (
             request.user
             and request.user.is_authenticated
-            and request.user.roll in ['teacher', 'principal']
+            and request.user.role in ['teacher', 'principal']
         )
 
 class IsParent(BasePermission):
@@ -23,5 +23,5 @@ class IsParent(BasePermission):
         return (
             request.user
             and request.user.is_authenticated
-            and request.user.roll == 'parent'
+            and request.user.role == 'parent'
         )

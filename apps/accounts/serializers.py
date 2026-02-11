@@ -17,14 +17,17 @@ class LoginSerializer(serializers.Serializer):
         if not user:
             raise serializers.ValidationError('Invalid email or password')
         
+        if not user.is_active:
+            raise serializers.ValidationError("User account disabled")
+
         attrs['user'] = user
         return attrs
     
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'roll', 'first_name', 'last_name']
-        read_only_fields = ['id', 'roll']
+        fields = ['id', 'username', 'email', 'role', 'first_name', 'last_name']
+        read_only_fields = ['id', 'role']
 
 
 
@@ -36,12 +39,12 @@ class ParentCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name']
 
-        read_only_fields = ['id', 'roll']
+        read_only_fields = ['id', 'role']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = User(**validated_data)
-        user.roll = 'parent'
+        user.role = 'parent'
         user.set_password(password)
         user.save()
         return user
@@ -55,12 +58,12 @@ class TeacherCreateSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email', 'password', 'first_name', 'last_name']
 
-        read_only_fields = ['id', 'roll']
+        read_only_fields = ['id', 'role']
 
     def create(self, validated_data):
         password = validated_data.pop('password')
         user = User(**validated_data)
-        user.roll = 'teacher'
+        user.role = 'teacher'
         user.set_password(password)
         user.save()
         return user

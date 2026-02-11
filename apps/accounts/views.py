@@ -33,7 +33,7 @@ class LoginView(APIView):
                 "user": {
                     "id": user.id,
                     "email": user.email,
-                    "roll": user.roll,
+                    "role": user.role,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                 }
@@ -46,7 +46,7 @@ class LoginView(APIView):
         
 
 class ParentViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.filter(roll='parent')
+    queryset = User.objects.filter(role='parent')
     serializer_class = ParentCreateSerializer
     permission_classes = [IsAuthenticated]
 
@@ -65,7 +65,7 @@ class ParentViewSet(viewsets.ModelViewSet):
         
 
 class TeacherViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.filter(roll='teacher')
+    queryset = User.objects.filter(role='teacher')
     serializer_class = TeacherCreateSerializer
     permission_classes = [IsAuthenticated, IsPrincipal]
 
