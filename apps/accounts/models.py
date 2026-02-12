@@ -18,3 +18,27 @@ class User(AbstractUser):
     def __str__(self):
         return self.email
 
+
+class ParentProfile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="parent_profile"
+    )
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.user.email
+
+
+class TeacherProfile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="teacher_profile"
+    )
+    employee_id = models.CharField(max_length=20, unique=True)
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.user.email

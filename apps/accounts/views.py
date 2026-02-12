@@ -40,15 +40,22 @@ class LoginView(APIView):
             }, status=200)
 
         return Response({
-            'message': 'User creation failed',
+            'message': 'login failed',
             'errors': serializer.errors
         }, status=400)
+    
+class MeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data, status=200)
         
 
 class ParentViewSet(viewsets.ModelViewSet):
     queryset = User.objects.filter(role='parent')
     serializer_class = ParentCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsTeacherOrPrincipal]
 
     def get_permissions(self):
         if self.action in ['create']:
