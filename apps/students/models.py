@@ -1,52 +1,41 @@
-from apps.accounts.models import ParentProfile, TeacherProfile
 from django.db import models
-from utils.choices import GENDER
+from django.conf import settings
+from django.utils import timezone
+from apps.classes.models import ClassRoom
+from apps.houses.models import House
+from apps.parents.models import Parent
 
-
-
-class Class(models.Model):
-    name = models.CharField(max_length=20)   
-    section = models.CharField(max_length=5)
-
-    def __str__(self):
-        return f"{self.name}{self.section}"
-
-
-class House(models.Model):
-    name = models.CharField(max_length=20, unique=True)
-    house_master = models.ForeignKey(
-        TeacherProfile,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
-    )
-
-    def __str__(self):
-        return self.name
 
 
 class Student(models.Model):
-    admission_number = models.CharField(max_length=20, unique=True)
-    roll_number = models.PositiveIntegerField()
-
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-
-    date_of_birth = models.DateField()
-    gender = models.CharField(max_length=10, choices=GENDER)
-    
-    parent = models.ForeignKey(ParentProfile, related_name='students', on_delete=models.CASCADE)
-    
-    student_class = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
-    
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_profile')
+    classroom = models.ForeignKey(ClassRoom, on_delete=models.SET_NULL, null=True, blank=True)
     house = models.ForeignKey(House, on_delete=models.SET_NULL, null=True, blank=True)
-    
-    is_active = models.BooleanField(default=True)
-    admission_date = models.DateField(auto_now_add=True)
+    parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True, blank=True)
+    admission_number = models.CharField(max_length=50, unique=True, blank=True, null=True)
+    admission_date = models.DateField(max_length=50, null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    photo = models.ImageField(upload_to='student_photos/', blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+
+        if not self.admission_number:
+            year = timezone.now().year
+
+            last_student = Student.objects.filter(
+                admission_number__startswith=f"JNV-{year}"
+            ).order_by('id').last()
+
+            if last_student:
+                last_number = int(last_student.admission_number.split('-')[-1])
+                new_number = last_number + 1
+            else:
+                new_number = 1
+
+            self.admission_number = f"JNV-{year}-{str(new_number).zfill(5)}"
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-    
-
-
+        return f"{self.user.get_full_name()} - {self.admission_number}"
 

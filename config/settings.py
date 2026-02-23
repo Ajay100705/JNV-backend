@@ -29,13 +29,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'corsheaders',
     'rest_framework',
+    'rest_framework_simplejwt',
+    
 
     'apps.accounts',
-    'apps.classes',
+    'apps.core',
+    'apps.academic',
     'apps.students',
     'apps.teachers',
+    'apps.parents',
+    'apps.attendance',
+    'apps.results',
+    'apps.classes',
+    'apps.houses',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -143,7 +152,10 @@ CSRF_TRUSTED_ORIGINS = [
 
 
 
-# custom auth backend
-AUTHENTICATION_BACKENDS = [
-    'apps.accounts.backends.EmailBackend',
-]
+# # custom auth backend
+# AUTHENTICATION_BACKENDS = [
+#     'apps.accounts.backends.EmailBackend',
+# ]
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
