@@ -12,7 +12,8 @@ class TeacherProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', read_only=True)
     gender = serializers.CharField(source='user.gender', read_only=True)
     
-    phone = serializers.CharField( read_only=True)
+    phone1 = serializers.CharField( read_only=True)
+    phone2 = serializers.CharField( read_only=True)
     
 
     class Meta:
@@ -24,7 +25,8 @@ class TeacherProfileCreateSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(write_only=True)
     email = serializers.EmailField(write_only=True)
     gender = serializers.CharField(write_only=True)
-    phone = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    phone1 = serializers.CharField(write_only=True, required=False, allow_blank=True)
+    phone2 = serializers.CharField(write_only=True, required=False, allow_blank=True)
     username = serializers.CharField(write_only=True)
     # password = serializers.CharField(write_only=True)
 
@@ -36,11 +38,14 @@ class TeacherProfileCreateSerializer(serializers.ModelSerializer):
                   'last_name',
                   'email',
                   'gender',
-                  'phone',
+                  'phone1',
+                  'phone2',
                   'subject', 
                   'qualification', 
                   'experience_years', 
-                  'date_of_joining', 
+                  'date_of_joining',
+                    'present_address',
+                    'permanent_address', 
                   'photo'
                   ]
     def validate_username(self, value):
@@ -60,7 +65,8 @@ class TeacherProfileCreateSerializer(serializers.ModelSerializer):
         last_name = validated_data.pop('last_name')
         email = validated_data.pop('email')
         gender = validated_data.pop('gender')
-        phone = validated_data.pop('phone', None)
+        phone1 = validated_data.pop('phone1', None)
+        phone2 = validated_data.pop('phone2', None)
         username = validated_data.pop('username')
         
         user = User.objects.create_user(
@@ -73,7 +79,7 @@ class TeacherProfileCreateSerializer(serializers.ModelSerializer):
             role='teacher'
             )
 
-        teacher = TeacherProfile.objects.create(user=user, phone=phone, **validated_data)
+        teacher = TeacherProfile.objects.create(user=user, phone1=phone1, phone2=phone2, **validated_data)
         return teacher
     
 
@@ -83,15 +89,19 @@ class TeacherProfileCreateSerializer(serializers.ModelSerializer):
         user = instance.user
 
         username = validated_data.pop('username', None)
-        phone = validated_data.pop('phone', None)
+        phone1 = validated_data.pop('phone1', None)
+        phone2 = validated_data.pop('phone2', None)
 
         if username:
             user.username = username
 
         user.save()
 
-        if phone is not None:
-            instance.phone = phone   # ✅ update phone
+        if phone1 := validated_data.pop('phone1', None):
+            instance.phone1 = phone1   # ✅ update phone1
+
+        if phone2 := validated_data.pop('phone2', None):
+            instance.phone2 = phone2   # ✅ update phone2
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)

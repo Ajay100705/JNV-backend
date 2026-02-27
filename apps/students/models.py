@@ -11,7 +11,7 @@ class Student(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='student_profile')
     classroom = models.ForeignKey(ClassRoom, on_delete=models.SET_NULL, null=True, blank=True)
     house = models.ForeignKey(House, on_delete=models.SET_NULL, null=True, blank=True)
-    parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True, blank=True)
+    parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, null=True, blank=True, related_name="children")
     admission_number = models.CharField(max_length=50, unique=True, blank=True, null=True)
     admission_date = models.DateField(max_length=50, null=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)

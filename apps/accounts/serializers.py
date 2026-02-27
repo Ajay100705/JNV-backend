@@ -1,13 +1,37 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import User
+from .models import User , PrincipalProfile
 from django.contrib.auth import authenticate
+from apps.teachers.serializers import TeacherProfileSerializer
+from apps.students.serializers import StudentSerializer
 
 class UserSerializer(serializers.ModelSerializer):
+    profile = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'role', 'gender']
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "role",
+            "gender",
+            "profile",
+        ]
 
+    def get_profile(self, obj):
+        if obj.role == "principal" and hasattr(obj, "principal_profile"):
+            return PrincipalProfileSerializer(obj.principal_profile).data
+
+        if obj.role == "teacher" and hasattr(obj, "teacher_profile"):
+            return TeacherProfileSerializer(obj.teacher_profile).data
+
+        if obj.role == "student" and hasattr(obj, "student"):
+            return StudentSerializer(obj.student).data
+
+        return None
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -34,28 +58,52 @@ class LoginSerializer(serializers.Serializer):
         }
 
 
-# class RegisterSerializer(serializers.ModelSerializer):
-#     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-#     # password2 = serializers.CharField(write_only=True, required=True)
+class PrincipalProfileSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = User
-#         fields = ['username', 'email', 'first_name', 'last_name', 'role', 'gender', 'password']
+    # User fields mapped correctly
+    first_name = serializers.CharField(source="user.first_name", required=False)
+    last_name = serializers.CharField(source="user.last_name", required=False)
+    username = serializers.CharField(source="user.username", required=False)
+    email = serializers.EmailField(source="user.email", required=False)
+    gender = serializers.CharField(source="user.gender", required=False)
 
-#     # def validate(self, attrs):
-#     #     if attrs['password'] != attrs['password2']:
-#     #         raise serializers.ValidationError({"password": "Password fields didn't match."})
-#     #     return attrs
+    class Meta:
+        model = PrincipalProfile
+        fields = [
+            "first_name",
+            "last_name",
+            "username",
+            "email",
+            "gender",
 
-#     def create(self, validated_data):
-#         user = User.objects.create(
-#             username=validated_data['username'],
-#             email=validated_data['email'],
-#             first_name=validated_data['first_name'],
-#             last_name=validated_data['last_name'],
-#             role=validated_data['role'],
-#             gender=validated_data['gender']
-#         )
-#         user.set_password(validated_data['password'])
-#         user.save()
-#         return user
+            "phone1",
+            "phone2",
+            "photo",
+            "present_address",
+            "permanent_address",
+            "bio",
+            "joining_date"
+        ]
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop("user", {})
+        user = instance.user
+
+        # Update User fields
+        user.first_name = user_data.get("first_name", user.first_name)
+        user.last_name = user_data.get("last_name", user.last_name)
+        user.username = user_data.get("username", user.username)
+        user.email = user_data.get("email", user.email)
+        user.gender = user_data.get("gender", user.gender)
+        user.save()
+
+        # Update PrincipalProfile fields
+        return super().update(instance, validated_data)
+
+    def validate_email(self, value):
+        user = self.instance
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError("Email already in use.")
+        return value
+
+    
