@@ -15,9 +15,12 @@ class Command(BaseCommand):
                 username=username,
                 password=password,
                 email="principal@school.com"
+                role = "principal"
+                gender = "male"
             )
 
-            user.role = "principal"
+            user.is_staff = True
+            user.is_superuser = True
             user.save()
 
             self.stdout.write(self.style.SUCCESS("Principal superuser created"))
