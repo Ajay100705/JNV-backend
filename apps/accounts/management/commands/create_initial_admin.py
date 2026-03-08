@@ -19,8 +19,8 @@ class Command(BaseCommand):
                 gender = "male"
             )
 
-            user.is_staff = True
-            user.is_superuser = True
+            # user.is_staff = True
+            # user.is_superuser = True
             user.save()
 
             self.stdout.write(self.style.SUCCESS("Principal superuser created"))

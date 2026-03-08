@@ -4,8 +4,8 @@ from utils.choices import ROLE, GENDER
 
 
 class User(AbstractUser):
-    role = models.CharField(max_length=20, choices=ROLE)
-    gender = models.CharField(max_length=10, choices=GENDER)
+    role = models.CharField(max_length=20, choices=ROLE, default='principal')
+    gender = models.CharField(max_length=10, choices=GENDER, default='male')
 
 
     def __str__(self):
