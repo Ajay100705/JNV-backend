@@ -22,4 +22,4 @@ class Command(BaseCommand):
 
             self.stdout.write(self.style.SUCCESS("Principal superuser created"))
         else:
-            self.stdout.write("Principal already exists")
+            self.stdout.write("Principal already exists") 
