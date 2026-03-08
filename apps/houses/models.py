@@ -9,7 +9,7 @@ class House(models.Model):
     house_category = models.CharField(max_length=20, choices=HOUSE_CATEGORY)
 
     def __str__(self):
-        return self.house_name
+        return self.house_name + " - " + self.house_category
 
 class HouseMaster(models.Model):
     teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE)

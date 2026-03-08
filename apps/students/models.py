@@ -37,5 +37,8 @@ class Student(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.get_full_name()} - {self.admission_number}"
+        return f"{self.user.get_full_name()} "
+        
+    def get_admission_number(self):
+        return self.admission_number
 

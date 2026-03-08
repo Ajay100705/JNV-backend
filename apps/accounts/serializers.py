@@ -4,6 +4,7 @@ from .models import User , PrincipalProfile
 from django.contrib.auth import authenticate
 from apps.teachers.serializers import TeacherProfileSerializer
 from apps.students.serializers import StudentSerializer
+from apps.parents.serializers import ParentSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     profile = serializers.SerializerMethodField()
@@ -22,15 +23,20 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
     def get_profile(self, obj):
-        if obj.role == "principal" and hasattr(obj, "principal_profile"):
-            return PrincipalProfileSerializer(obj.principal_profile).data
+        try:
+            if obj.role == "principal" :
+                return PrincipalProfileSerializer(obj.principal_profile).data
 
-        if obj.role == "teacher" and hasattr(obj, "teacher_profile"):
-            return TeacherProfileSerializer(obj.teacher_profile).data
+            if obj.role == "teacher" :
+                return TeacherProfileSerializer(obj.teacher_profile).data
 
-        if obj.role == "student" and hasattr(obj, "student"):
-            return StudentSerializer(obj.student).data
+            if obj.role == "student" :
+                return StudentSerializer(obj.student_profile).data
+            if obj.role == "parent" :
+                return ParentSerializer(obj.parent_profile).data
 
+        except Exception as e:
+            return None
         return None
 
 class LoginSerializer(serializers.Serializer):

@@ -14,4 +14,6 @@ urlpatterns = [
     path('core/', include('apps.core.urls')),
     path('houses/', include('apps.houses.urls')),
     path('parents/', include('apps.parents.urls')),
+    path('academic/', include('apps.academic.urls')),
+    path('attendance/', include('apps.attendance.urls')),
 ]

@@ -90,6 +90,7 @@ class StudentCreateSerializer(serializers.ModelSerializer):
             "house_name",
             "house_category",
 
+            
             "parent_first_name",
             "parent_last_name",
             "parent_phone1",
@@ -117,7 +118,7 @@ class StudentCreateSerializer(serializers.ModelSerializer):
             email=validated_data.pop("email", ""),
             gender=validated_data.pop("gender", ""),
             username=validated_data.pop("username"), 
-            password="student123",  # Set a default password or generate one
+            password="student123",  
             role='student'
             )
 
@@ -131,27 +132,50 @@ class StudentCreateSerializer(serializers.ModelSerializer):
             house_category=validated_data.pop("house_category")
         )  
         
+        # -------- POP PARENT DATA FIRST --------
+        parent_first_name = validated_data.pop("parent_first_name")
+        parent_last_name = validated_data.pop("parent_last_name")
+        parent_phone1 = validated_data.pop("parent_phone1")
+        parent_phone2 = validated_data.pop("parent_phone2", "")
+        parent_email = validated_data.pop("parent_email")
+        parent_job = validated_data.pop("parent_job", "")
+        present_address = validated_data.pop("present_address")
+        permanent_address = validated_data.pop("permanent_address")
+        parent_photo = validated_data.pop("parent_photo", None)
         
-
-        parent = Parent.objects.create(
-            first_name=validated_data.pop("parent_first_name"),
-            last_name=validated_data.pop("parent_last_name"),
-            phone1=validated_data.pop("parent_phone1"),
-            phone2=validated_data.pop("parent_phone2", ""),
-            email=validated_data.pop("parent_email"),
-            job=validated_data.pop("parent_job", ""),
-            present_address=validated_data.pop("present_address"),
-            permanent_address=validated_data.pop("permanent_address"),
-            photo=validated_data.pop("parent_photo", None)
-        )
-
         student = Student.objects.create(
             user=user,
-            parent=parent,
             classroom=classroom,
             house=house,
             **validated_data
         )
+        
+        admission_number = student.admission_number
+        
+        # parent user
+        parent_user = User.objects.create_user(
+            username=admission_number,
+            password="parent@123",
+            role="parent"
+        )
+        
+
+        parent = Parent.objects.create(
+            user=parent_user,
+            
+            first_name=parent_first_name,
+            last_name=parent_last_name,
+            phone1=parent_phone1,
+            phone2=parent_phone2,
+            email=parent_email,
+            job=parent_job,
+            present_address=present_address,
+            permanent_address=permanent_address,
+            photo=parent_photo
+        )
+
+        student.parent = parent
+        student.save()
 
         return student
 
