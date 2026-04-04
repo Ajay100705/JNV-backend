@@ -163,7 +163,7 @@ class StudentViewSetCreateTest(APITestCase):
 class StudentViewSetRetrieveTest(APITestCase):
 
     def setUp(self):
-        self.principal = make_principal(username="retrivesprincip")
+        self.principal = make_principal(username="retrievesprincip")
         classroom = make_classroom(class_name="7th", section="B")
         user = make_student_user(username="retrievestu")
         self.student = Student.objects.create(user=user, classroom=classroom)

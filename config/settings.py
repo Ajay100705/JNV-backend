@@ -18,6 +18,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-default-key-for-development-and-t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
+if not os.getenv('SECRET_KEY') and os.getenv('DATABASE_URL'):
+    raise RuntimeError(
+        "SECRET_KEY environment variable must be set in production. "
+        "Do not use the insecure default key."
+    )
 
 
 
