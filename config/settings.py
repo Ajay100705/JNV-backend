@@ -172,15 +172,16 @@ SIMPLE_JWT = {
 }
 
 
-# CORS_ALLOW_ALL_ORIGINS = [
-#     "http://localhost:3000",
-#     "http://localhost:5173",
-#     "https://jnv-frontend.vercel.app"
-# ]   
+CORS_ALLOW_ALL_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://jnv-frontend.vercel.app"
+]   
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
     "https://jnv-frontend.vercel.app",
+    "http://localhost:5173",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
