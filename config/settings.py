@@ -176,6 +176,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     "https://jnv-frontend-j940fg6d-chandelajay2007-5565-projects.vercel.app",
     "http://localhost:5173",
+    "https://jnv-frontend.vercel.app",
 ]  
 
 CORS_ALLOW_ALL_ORIGINS = False
@@ -186,7 +187,8 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://localhost:5173",
-    "https://jnv-frontend-j940fg6d-chandelajay2007-5565-projects.vercel.app"
+    "https://jnv-frontend-j940fg6d-chandelajay2007-5565-projects.vercel.app",
+    "https://jnv-frontend.vercel.app",
 ]
 
 ALLOWED_HOSTS = ["*"]
