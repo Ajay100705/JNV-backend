@@ -157,7 +157,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -172,17 +172,14 @@ SIMPLE_JWT = {
 }
 
 
-CORS_ALLOW_ALL_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:5173",
-    "https://jnv-frontend.vercel.app"
-]   
-CORS_ALLOW_CREDENTIALS = True
-
 CORS_ALLOWED_ORIGINS = [
     "https://jnv-frontend.vercel.app",
     "http://localhost:5173",
-]
+]  
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",
